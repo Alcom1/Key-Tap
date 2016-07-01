@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>Key test</title>
+		<style>
+            body
+            {
+                background-color: #000;
+            }
+		</style>
+        <script>
+            //Main OL with frames.
+            var main =
+            {
+                init : function()
+                {
+                    this.frame();
+                },
+                
+                frame : function()
+                {
+                    this.animationID = requestAnimationFrame(this.frame.bind(this));
+                    
+                    //Test up arrow key
+                    if(keys.down[38])
+                        console.log("ARROW KEY DOWN");
+                }
+            };
+            
+            //OL with key arrays and methods.
+            var keys =
+            {
+                down : []
+            };
+            
+            //Set that key is down to keys
+            window.addEventListener(
+                "keydown",
+                function(e)
+                {
+                    //console.log("keydown=" + e.keyCode);
+                    keys.down[e.keyCode] = true;
+                });
+            
+            //Set that key is up to keys
+            window.addEventListener(
+                "keyup",
+                function(e)
+                {
+                    //console.log("keyup=" + e.keyCode);
+                    keys.down[e.keyCode] = false;
+                });
+            
+            //Start animation
+            window.onload = function()
+            {
+                main.init();
+            };
+        </script>
+	</head>
+	<body>
+	</body>
+</html>
