@@ -23,7 +23,7 @@
                     this.animationID = requestAnimationFrame(this.frame.bind(this));
                     
                     //Test up arrow key
-                    console.log(keys.down[38]);
+                    console.log(keys.isUp[38]);
                         
                     keys.refresh();
                 }
@@ -37,19 +37,40 @@
                 //1 == pressed
                 //2 == down
                 //3 == released
-                down : [],
+                state : [],
                 
                 //Refreshes pressed and released states to down and up
                 refresh : function()
                 {
-                    for(var i = 0; i < this.down.length; i++)
+                    for(var i = 0; i < this.state.length; i++)
                     {
-                        if(this.down[i] == 1)
-                            this.down[i] = 2;
-                        if(this.down[i] == 3)
-                            this.down[i] = 0;
+                        if(this.state[i] == 1)   //Pressed to down
+                            this.state[i] = 2;
+                        if(this.state[i] == 3)   //Released to up
+                            this.state[i] = 0;
                     }
-                }
+                },
+                
+                //key state queries
+                isUp : function(key)
+                {
+                    return !keys[key];
+                },
+                
+                isPressed : function(key)
+                {
+                    return keys[key] == 1;
+                },
+                
+                isDown : function(key)
+                {
+                    return keys[key] == 2;
+                },
+                
+                isReleased : function(key)
+                {
+                    return keys[key] == 3;
+                },
             };
             
             //Set that key is down to keys
@@ -57,8 +78,8 @@
                 "keydown",
                 function(e)
                 {
-                    if(!keys.down[e.keyCode])
-                        keys.down[e.keyCode] = 1;
+                    if(!keys.state[e.keyCode])
+                        keys.state[e.keyCode] = 1;
                 });
             
             //Set that key is up to keys
@@ -66,7 +87,7 @@
                 "keyup",
                 function(e)
                 {
-                    keys.down[e.keyCode] = 3;
+                    keys.state[e.keyCode] = 3;
                 });
             
             //Start animation
