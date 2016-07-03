@@ -22,9 +22,9 @@
                 {
                     this.animationID = requestAnimationFrame(this.frame.bind(this));
                     
-                    if(keys.isPressed(keys.KEYBOARD.Q))
+                    if(keys.isReleased(keys.KEYBOARD.Q))
                     {
-                        console.log("KEK");
+                        console.log("Q KEY RELEASED");
                     }
                         
                     keys.refresh();
@@ -39,7 +39,7 @@
                 //1 == pressed
                 //2 == down
                 //3 == released
-                state : [],
+                states : [],
                 
                 KEYBOARD : Object.freeze
                 ({
@@ -149,15 +149,24 @@
                     "QUOTE" : 222
                 }),
                 
+                //Key states
+                STATE : Object.freeze
+                ({
+                    "UP" : 0,
+                    "PRESSED" : 1,
+                    "DOWN" : 2,
+                    "RELEASED" : 3 
+                }),
+                
                 //Refreshes pressed and released states to down and up
                 refresh : function()
                 {
-                    for(var i = 0; i < this.state.length; i++)
+                    for(var i = 0; i < this.states.length; i++)
                     {
-                        if(this.state[i] == 1)   //Pressed to down
-                            this.state[i] = 2;
-                        if(this.state[i] == 3)   //Released to up
-                            this.state[i] = 0;
+                        if(this.states[i] == this.STATE.PRESSED)   //Pressed to down
+                            this.states[i] = this.STATE.DOWN;
+                        if(this.states[i] == this.STATE.RELEASED)   //Released to up
+                            this.states[i] = this.STATE.UP;
                     }
                 },
                 
@@ -165,25 +174,25 @@
                 isUp : function(key)
                 {
                     key = this.setCompatible(key);
-                    return !keys.state[key];
+                    return !keys.states[key];
                 },
                 
                 isPressed : function(key)
                 {
                     key = this.setCompatible(key);
-                    return keys.state[key] == 1;
+                    return keys.states[key] == this.STATE.PRESSED;
                 },
                 
                 isDown : function(key)
                 {
                     key = this.setCompatible(key);
-                    return keys.state[key] == 2;
+                    return keys.states[key] == this.STATE.DOWN;
                 },
                 
                 isReleased : function(key)
                 {
                     key = this.setCompatible(key);
-                    return keys.state[key] == 3;
+                    return keys.states[key] == this.STATE.RELEASED;
                 },
                 
                 //Performs compatibility fix between browsers for key values.
@@ -207,9 +216,8 @@
                 "keydown",
                 function(e)
                 {
-                    console.log(e.keyCode);
-                    if(!keys.state[e.keyCode])
-                        keys.state[e.keyCode] = 1;
+                    if(!keys.states[e.keyCode])
+                        keys.states[e.keyCode] = 1;
                 });
             
             //Set that key is up to keys
@@ -217,7 +225,7 @@
                 "keyup",
                 function(e)
                 {
-                    keys.state[e.keyCode] = 3;
+                    keys.states[e.keyCode] = 3;
                 });
             
             //Start animation
