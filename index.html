@@ -22,10 +22,9 @@
                 {
                     this.animationID = requestAnimationFrame(this.frame.bind(this));
                     
-                    for(i in keys.REFERENCE)
+                    if(keys.isPressed(keys.KEYBOARD.Q))
                     {
-                        if(keys.isPressed(i))
-                            console.log(keys.REFERENCE[i]);
+                        console.log("KEK");
                     }
                         
                     keys.refresh();
@@ -150,114 +149,6 @@
                     "QUOTE" : 222
                 }),
                 
-                REFERENCE : Object.freeze
-                ({
-                    8 : "BACKSPACE",
-                    9 : "TAB",
-                    13 : "ENTER",
-                    16 : "SHIFT",
-                    17 : "CTRL",
-                    18 : "ALT",
-                    19 : "PAUSE",
-                    20 : "CAPS",
-                    27 : "ESC",
-                    32 : "SPACE",
-                    
-                    33 : "PAGEUP",
-                    34 : "PAGEDOWN",
-                    35 : "END",
-                    36 : "HOME",
-                    45 : "INSERT",
-                    46 : "DELETE",
-                    
-                    37 : "LEFT", 
-                    38 : "UP", 
-                    39 : "RIGHT", 
-                    40 : "DOWN",
-                    
-                    48 : "0",
-                    49 : "1",
-                    50 : "2",
-                    51 : "3",
-                    52 : "4",
-                    53 : "5",
-                    54 : "6",
-                    55 : "7",
-                    56 : "8",
-                    57 : "9",
-                    
-                    65 : "A",
-                    66 : "B",
-                    67 : "C",
-                    68 : "D",
-                    69 : "E",
-                    70 : "F",
-                    71 : "G",
-                    72 : "H",
-                    73 : "I",
-                    74 : "J",
-                    75 : "K",
-                    76 : "L",
-                    77 : "M",
-                    78 : "N",
-                    79 : "O",
-                    80 : "P",
-                    81 : "Q",
-                    82 : "R",
-                    83 : "S",
-                    84 : "T",
-                    85 : "U",
-                    86 : "V",
-                    87 : "W",
-                    88 : "X",
-                    89 : "Y",
-                    90 : "Z",
-                    
-                    96 : "NUM0",
-                    97 : "NUM1",
-                    98 : "NUM2",
-                    99 : "NUM3",
-                    100 : "NUM4",
-                    101 : "NUM5",
-                    102 : "NUM6",
-                    103 : "NUM7",
-                    104 : "NUM8",
-                    105 : "NUM9",
-                    
-                    107 : "ADD",
-                    109 : "SUB",
-                    106 : "MULT",
-                    111 : "DIV",
-                    110 : "DEC",
-                    
-                    112 : "F1",
-                    113 : "F2",
-                    114 : "F3",
-                    115 : "F4",
-                    116 : "F5",
-                    117 : "F6",
-                    118 : "F7",
-                    119 : "F8",
-                    120 : "F9",
-                    121 : "F10",
-                    122 : "F11",
-                    123 : "F12",
-                    
-                    144 : "NUMLOCK",
-                    145 : "SCROLLLOCK",
-                    186 : "SEMICOLON",
-                    187 : "EQUAL",
-                    188 : "COMMA",
-                    189 : "DASH",
-                    190 : "PERIOD",
-                    191 : "FORWARDSLASH",
-                    220 : "BACKSLASH",
-                    192 : "TILDE",
-                    219 : "OPENBRACKET",
-                    221 : "CLOSEBRACKET",
-                    222 : "QUOTE"
-                }),
-                
                 //Refreshes pressed and released states to down and up
                 refresh : function()
                 {
@@ -273,23 +164,42 @@
                 //key state queries
                 isUp : function(key)
                 {
+                    key = this.setCompatible(key);
                     return !keys.state[key];
                 },
                 
                 isPressed : function(key)
                 {
+                    key = this.setCompatible(key);
                     return keys.state[key] == 1;
                 },
                 
                 isDown : function(key)
                 {
+                    key = this.setCompatible(key);
                     return keys.state[key] == 2;
                 },
                 
                 isReleased : function(key)
                 {
+                    key = this.setCompatible(key);
                     return keys.state[key] == 3;
                 },
+                
+                //Performs compatibility fix between browsers for key values.
+                setCompatible(key)
+                {
+                    if(key == 59)   //FF Semicolon
+                        key = 186;
+                    
+                    if(key == 61)   //FF Dash
+                        key = 187;
+                        
+                    if(key == 173)  //FF Minus
+                        key = 189;
+                    
+                    return key;
+                }
             };
             
             //Set that key is down to keys
@@ -297,6 +207,7 @@
                 "keydown",
                 function(e)
                 {
+                    console.log(e.keyCode);
                     if(!keys.state[e.keyCode])
                         keys.state[e.keyCode] = 1;
                 });
